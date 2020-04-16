@@ -2,9 +2,7 @@
 composer install
 
 ## Clear cache and config
-php artisan cache:clear
-php artisan config:cache
-php artisan config:clear
+php artisan cache:clear&&php artisan config:cache&&php artisan config:clear
 
 ## Migrations
 php artisan migrate --seed

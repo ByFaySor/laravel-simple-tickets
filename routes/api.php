@@ -14,14 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/login', 'UserController@login');
 Route::post('/register', 'UserController@register');
-Route::middleware('auth:sanctum')->get('/logout', 'UserController@logout');
 
-Route::middleware('auth:sanctum')->get('/tickets', 'TicketController@index');
-Route::middleware('auth:sanctum')->post('/tickets', 'TicketController@solicit');
-Route::middleware('auth:sanctum')->patch('/tickets', 'TicketController@approve');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/logout', 'UserController@logout');
+    Route::get('/tickets', 'TicketController@index');
+    Route::post('/tickets', 'TicketController@solicit');
+    Route::patch('/tickets', 'TicketController@approve');
+});

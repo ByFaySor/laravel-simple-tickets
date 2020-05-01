@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => 3,
 
     /*
     |--------------------------------------------------------------------------
@@ -42,5 +42,7 @@ return [
     'middleware' => [
         'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
     ],
+
+    'prefix' => 'api',
 
 ];

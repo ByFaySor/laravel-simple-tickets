@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use App\User;
-use App\Role;
-use App\RoleUser;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{
+    Auth, Log, Hash, Validator
+};
+use App\{
+    User, Role, RoleUser
+};
 
 class UserController extends Controller
 {
-
     public function register(Request $request)
     {
         $this->validator($request->all())->validate();
@@ -32,10 +30,9 @@ class UserController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
-            'password_confirmation' => ['required', 'string', 'min:4'],
         ]);
     }
 
@@ -65,8 +62,9 @@ class UserController extends Controller
         return Auth::guard();
     }
 
-    public function login(Request $request) {
-        $data = $request->validate([
+    public function login(Request $request)
+    {
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
@@ -76,7 +74,7 @@ class UserController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
                 'message' => 'Datos incorrectos, intente nuevamente.'
-            ], 404);
+            ], 422);
         }
     
         $token = $user->createToken('fs-tickets')->plainTextToken;
@@ -89,12 +87,12 @@ class UserController extends Controller
             'token' => $token
         ];
     
-        return response($response, 201);
+        return response($response, 200);
     }
 
     public function logout()
     {
-        Auth::logout();
+        auth()->user()->tokens()->delete();
         return response()->json(['message' => 'Sesión cerrada'], 200);
     }
 }

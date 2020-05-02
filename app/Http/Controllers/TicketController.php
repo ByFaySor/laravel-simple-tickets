@@ -21,6 +21,12 @@ class TicketController extends Controller
     }
 
     public function solicit() {
+        $has_user_ticket = Ticket::where('user_id', Auth::user()->id)
+            ->where('code', '')
+            ->first();
+        if ($has_user_ticket) {
+            return response()->json(['success' => false, 'message' => 'Ya ha solicitado un Ticket, por favor espere que sea aprobado!'], 405);
+        }
         $ticket = Ticket::create([
             'code' => '',
             'user_id' => Auth::user()->id,
